@@ -18,11 +18,14 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
     $cordovaHealthKit.isAvailable().then(function(yes) {
       // HK is available
-      var permissions = ['HKQuantityTypeIdentifierHeight'];
+      var readable = ['HKQuantityTypeIdentifierStepCount',
+                      'HKQuantityTypeIdentifierDistanceWalkingRunning', 
+                      'HKQuantityTypeIdentifierFlightsClimbed'];
+      var writable = []
    
       $cordovaHealthKit.requestAuthorization(
-          permissions, // Read permission
-          permissions // Write permission
+          readable, // Read permission
+          writable // Write permission
       ).then(function(success) {
           // store that you have permissions
       }, function(err) {
@@ -37,39 +40,18 @@ angular.module('starter', ['ionic', 'ngCordova'])
 })
 
 .controller('AppCtrl', function($scope, $cordovaHealthKit) {
-    $scope.body = {
-      height: ''
-    };
- 
-    $scope.saveHeight = function() {
-        $cordovaHealthKit.saveHeight($scope.body.height, 'cm').then(function(v) {
-        }, function(err) {
-          alert(err);
-          console.log('clicked saveheight')
-        });
-    };
- 
-    $scope.getHeight = function() {
-        $cordovaHealthKit.readHeight('cm').then(function(v) {
-            alert('Your height: ' + v.value + " " + v.unit);
-        }, function(err) {
-            alert(err);
-        });
-    };
 
-    $scope.saveWorkout = function() {
-      $cordovaHealthKit.saveWorkout(
+  var stepsCount = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)
+  var sumOption = HKStatisticsOptions.CumulativeSum
+    $scope.getStepCount = function() {
+      $cordovaHealthKit.querySampleType(
           {
-              'activityType': 'HKWorkoutActivityTypeCycling',
-              'quantityType': 'HKQuantityTypeIdentifierDistanceCycling',
-              'startDate': new Date(), // now
-              'endDate': null, // not needed when using duration
-              'duration': 6000, //in seconds
-              'energy': 400, //
-              'energyUnit': 'kcal', // J|cal|kcal
-              'distance': 5, // optional
-              'distanceUnit': 'km'
+              "startDate" : new Date(new Date().getTime() - 2*24*60*60*1000),
+              "endDate"   : new Date(),
+              "sampleType": "HKQuantityTypeIdentifierStepCount",
+              "unit"      : "count"
           }
+          
       ).then(function(v) {
           alert(JSON.stringify(v));
       }, function(err) {
@@ -77,11 +59,10 @@ angular.module('starter', ['ionic', 'ngCordova'])
       });
     };
  
-    $scope.getWorkouts = function() {
-        $cordovaHealthKit.findWorkouts().then(function(v) {
-            alert(JSON.stringify(v));
-        }, function(err) {
-            console.log(err);
-        });
-    };
+    $scope.getTotalSteps = function() {
+      $cordovaHealthKit.HKStatisticsQuery(quantityType: stepsCount, quantitySamplePredicate: nil,
+    options: sumOption)
+
+
+    }
 });

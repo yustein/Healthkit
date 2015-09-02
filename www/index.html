@@ -23,20 +23,9 @@
     </ion-header-bar>
     <ion-content class="has-header padding">
       <!-- Height -->
-      <div class="list">
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper">
-            <input type="text" placeholder="Your height" ng-model="body.height">
-          </label>
-          <button class="button button-small" ng-click="saveHeight()">Set height</button>
-        </div>
-      </div>
-      <button class="button button-positive" ng-click="getHeight()">Get height</button>
+      <button class="button button-positive" ng-click="getStepCount()">Get Step Count</button>
+      <button class="button button-positive" ng-click="getTotalSteps()">Get Step Total</button>
       <br>
-      <!-- Workout -->
-      <button class="button button-positive" ng-click="saveWorkout()">Set a Workout</button>
-      <button class="button button-positive" ng-click="getWorkouts()">Get workout data</button>
-      
     </ion-content>
   </ion-pane>
 </body>
