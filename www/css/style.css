@@ -1,1 +1,33 @@
 /* Empty. Add your own CSS if you like */
+
+.sprite-container {
+	width: 100vw;
+	height: 80vh;
+	background: url(../img/supermariomap.png) repeat-y;
+	background-position: 0px 610px;
+	-webkit-animation: backgroundScroll 10s linear infinite;
+	animation: backgroundScroll 10s linear infinite;
+}
+
+.sprite {
+    height: 95px;
+    width: 58px;
+    background: url(../img/smb2.png);
+    background-size: 872px 760px;
+    margin: 0 auto;
+    position: relative;
+    top: 52vh;
+    transform: scaleX(-1);
+     -webkit-transform: scaleX(-1);
+}
+
+
+@-webkit-keyframes backgroundScroll {
+from {background-position: 0px 610px;}
+to {background-position: -1000px 610px;}
+}
+ 
+@keyframes backgroundScroll {
+from {background-position: 0px 610px;}
+to {background-position: -1000px 610px;}
+}

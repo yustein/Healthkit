@@ -6,5 +6,8 @@
   },
   "dependencies": {
     "ngCordova": "~0.1.20-alpha"
+  },
+  "resolutions": {
+    "jquery": "~1.8.2"
   }
 }

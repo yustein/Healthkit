@@ -1,9 +1,3 @@
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'ngCordova'])
 
 .run(function($ionicPlatform, $cordovaHealthKit) {
@@ -18,11 +12,14 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
     $cordovaHealthKit.isAvailable().then(function(yes) {
       // HK is available
-      var permissions = ['HKQuantityTypeIdentifierHeight'];
+      var readable = ['HKQuantityTypeIdentifierStepCount',
+                      'HKQuantityTypeIdentifierDistanceWalkingRunning', 
+                      'HKQuantityTypeIdentifierFlightsClimbed'];
+      var writable = []
    
       $cordovaHealthKit.requestAuthorization(
-          permissions, // Read permission
-          permissions // Write permission
+          readable, // Read permission
+          writable // Write permission
       ).then(function(success) {
           // store that you have permissions
       }, function(err) {
@@ -37,51 +34,29 @@ angular.module('starter', ['ionic', 'ngCordova'])
 })
 
 .controller('AppCtrl', function($scope, $cordovaHealthKit) {
-    $scope.body = {
-      height: ''
-    };
- 
-    $scope.saveHeight = function() {
-        $cordovaHealthKit.saveHeight($scope.body.height, 'cm').then(function(v) {
-        }, function(err) {
-          alert(err);
-          console.log('clicked saveheight')
-        });
-    };
- 
-    $scope.getHeight = function() {
-        $cordovaHealthKit.readHeight('cm').then(function(v) {
-            alert('Your height: ' + v.value + " " + v.unit);
-        }, function(err) {
-            alert(err);
-        });
-    };
 
-    $scope.saveWorkout = function() {
-      $cordovaHealthKit.saveWorkout(
-          {
-              'activityType': 'HKWorkoutActivityTypeCycling',
-              'quantityType': 'HKQuantityTypeIdentifierDistanceCycling',
-              'startDate': new Date(), // now
-              'endDate': null, // not needed when using duration
-              'duration': 6000, //in seconds
-              'energy': 400, //
-              'energyUnit': 'kcal', // J|cal|kcal
-              'distance': 5, // optional
-              'distanceUnit': 'km'
-          }
-      ).then(function(v) {
-          alert(JSON.stringify(v));
-      }, function(err) {
-          console.log(err);
-      });
-    };
- 
-    $scope.getWorkouts = function() {
-        $cordovaHealthKit.findWorkouts().then(function(v) {
-            alert(JSON.stringify(v));
-        }, function(err) {
-            console.log(err);
-        });
-    };
+  // var stepsCount = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)
+  // var sumOption = HKStatisticsOptions.CumulativeSum
+  $scope.getStepCount = function() {
+    $cordovaHealthKit.querySampleType(
+        {
+            "startDate" : new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+            "endDate"   : new Date(),
+            "sampleType": "HKQuantityTypeIdentifierStepCount",
+            "unit"      : "count"
+        }
+        
+    ).then(function(v) {
+      var cumulativeSum = 0
+      for (var i = 0; i < v.length; i++) {
+        cumulativeSum = cumulativeSum + v[i]["quantity"]
+      };  
+      alert("You walked " + cumulativeSum + " steps in the last 24 hours."); 
+
+
+    }, function(err) {
+        console.log(err);
+    });
+  };
 });
+
