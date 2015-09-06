@@ -47,6 +47,11 @@ angular.module('starter', ['ionic', 'ngCordova'])
         }
         
     ).then(function(v) {
+      // var cumulativeSum = v.reduce(function(sum, quantity){
+      //   return sum + v.quantity
+      // }, 0)
+
+
       var cumulativeSum = 0
       for (var i = 0; i < v.length; i++) {
         cumulativeSum = cumulativeSum + v[i]["quantity"]
